@@ -2,27 +2,30 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Http\Controllers\Controller;
-use App\Http\Requests\MovementRequest;
-use App\Models\Movement;
-use App\Models\Product;
-use App\Models\Supplier;
 use App\Models\User;
-use App\Enums\MovementTypeEnum;
 use Inertia\Inertia;
+use App\Models\Product;
+use App\Models\Movement;
+use App\Models\Supplier;
+use App\Enums\MovementTypeEnum;
+use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Gate;
+use App\Http\Requests\Admin\MovementRequest;
 
 class MovementController extends Controller
 {
-    // Afficher la liste des mouvements
     public function index()
     {
+        Gate::authorize('viewAny', Movement::class);
+
         $movements = Movement::with(['product', 'user', 'supplier'])->latest()->paginate(10);
         return Inertia::render('admin/movements/Index', ['movements' => $movements]);
     }
 
-    // Afficher le formulaire de création
     public function create()
     {
+        Gate::authorize('create', Movement::class);
+
         $products = Product::all();
         $users = User::all();
         $suppliers = Supplier::all();
@@ -36,15 +39,14 @@ class MovementController extends Controller
         ]);
     }
 
-    // Enregistrer un nouveau mouvement
     public function store(MovementRequest $request)
     {
+        Gate::authorize('create', Movement::class);
+
         $validated = $request->validated();
 
-        // Créer le mouvement
         $movement = Movement::create($validated);
 
-        // Mettre à jour le stock du produit
         $product = Product::find($validated['product_id']);
         if ($validated['type'] === MovementTypeEnum::IN->value) {
             $product->increaseStock($validated['quantity']);
@@ -55,16 +57,18 @@ class MovementController extends Controller
         return redirect()->route('admin.movements.index')->with('message', 'Mouvement créé avec succès.');
     }
 
-    // Afficher les détails d'un mouvement
     public function show(Movement $movement)
     {
+        Gate::authorize('view', $movement);
+
         $movement->load(['product', 'user', 'supplier']);
         return Inertia::render('admin/movements/Show', ['movement' => $movement]);
     }
 
-    // Afficher le formulaire de modification
     public function edit(Movement $movement)
     {
+        Gate::authorize('update', $movement);
+
         $products = Product::all();
         $users = User::all();
         $suppliers = Supplier::all();
@@ -79,9 +83,10 @@ class MovementController extends Controller
         ]);
     }
 
-    // Mettre à jour un mouvement
     public function update(MovementRequest $request, Movement $movement)
     {
+        Gate::authorize('update', $movement);
+
         $validated = $request->validated();
 
         // Annuler l'effet du mouvement précédent sur le stock
@@ -92,7 +97,6 @@ class MovementController extends Controller
             $previousProduct->increaseStock($movement->quantity);
         }
 
-        // Mettre à jour le mouvement
         $movement->update($validated);
 
         // Appliquer l'effet du nouveau mouvement sur le stock
@@ -106,9 +110,10 @@ class MovementController extends Controller
         return redirect()->route('admin.movements.index')->with('message', 'Mouvement mis à jour avec succès.');
     }
 
-    // Supprimer un mouvement
     public function destroy(Movement $movement)
     {
+        Gate::authorize('delete', $movement);
+
         // Annuler l'effet du mouvement sur le stock
         $product = $movement->product;
         if ($movement->type === MovementTypeEnum::IN->value) {
@@ -117,7 +122,6 @@ class MovementController extends Controller
             $product->increaseStock($movement->quantity);
         }
 
-        // Supprimer le mouvement
         $movement->delete();
 
         return redirect()->route('admin.movements.index')->with('message', 'Mouvement supprimé avec succès.');

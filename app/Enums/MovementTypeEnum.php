@@ -17,9 +17,14 @@ enum MovementTypeEnum: string
 
     public function getLabel(): string
     {
-        return match($this) {
+        return match ($this) {
             self::IN => 'Entrée',
             self::OUT => 'Sortie',
         };
+    }
+
+    public static function values(): array
+    {
+        return array_column(self::cases(), 'value');
     }
 }

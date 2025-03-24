@@ -80,9 +80,9 @@ const destroy = (id: Product) => {
                                 {{ formatPrice(product.price) }} FCFA
                             </td>
                             <td class="space-x-2">
-                                <!-- <Link :href="route('admin.products.show', product)" class="text-btn">
+                                <Link :href="route('admin.products.show', product)" class="text-btn">
                                 Voir
-                                </Link> -->
+                                </Link>
                                 <Link :href="route('admin.products.edit', product)" class="text-btn">
                                 Modifier
                                 </Link>

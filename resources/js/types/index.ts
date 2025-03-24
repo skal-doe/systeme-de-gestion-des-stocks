@@ -51,9 +51,14 @@ export interface Category {
 }
 
 export enum MovementTypeEnum {
-    IN = 'Entrée',
-    OUT = 'Sortie',
+    IN = 'in',
+    OUT = 'out',
 }
+
+export const MovementTypeLabels = {
+    [MovementTypeEnum.IN]: 'Entrée',
+    [MovementTypeEnum.OUT]: 'Sortie',
+};
 
 // Interface pour le mouvement
 export interface Movement {

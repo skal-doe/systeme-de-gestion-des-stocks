@@ -29,6 +29,16 @@ const mainNavItems: NavItem[] = [
         href: route('admin.movements.index'),
         icon: Pin,
     },
+    {
+        title: 'Fournisseurs',
+        href: route('admin.suppliers.index'),
+        icon: Pin,
+    },
+    {
+        title: 'Utilisateurs',
+        href: route('admin.users.index'),
+        icon: Pin,
+    },
 ];
 
 </script>

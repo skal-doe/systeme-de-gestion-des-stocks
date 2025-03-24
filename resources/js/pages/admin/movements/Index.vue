@@ -79,6 +79,9 @@ const destroy = (id: Movement) => {
                                 {{ new Date(movement.date).toLocaleDateString('fr-FR') }}
                             </td>
                             <td class="space-x-2">
+                                <Link :href="route('admin.movements.show', movement)" class="text-btn">
+                                Voir
+                                </Link>
                                 <Link :href="route('admin.movements.edit', movement)" class="text-btn">
                                 Modifier
                                 </Link>

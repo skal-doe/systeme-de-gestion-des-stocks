@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Requests;
+namespace App\Http\Requests\Admin;
 
 use App\Enums\MovementTypeEnum;
 use Illuminate\Foundation\Http\FormRequest;
@@ -12,7 +12,7 @@ class MovementRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
